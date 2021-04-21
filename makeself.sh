@@ -158,6 +158,7 @@ MS_Usage()
     echo "    --nox11            : Disable automatic spawn of a xterm"
     echo "    --nowait           : Do not wait for user input after executing embedded"
     echo "                         program from an xterm"
+    echo "    --sign file        : Signature private key to sign the package with"
     echo "    --lsm file         : LSM file describing the package"
     echo "    --license file     : Append a license file"
     echo "    --help-header file : Add a header to the archive's --help output"
@@ -211,6 +212,8 @@ DATE=`LC_ALL=C date`
 EXPORT_CONF=n
 SHA256=n
 OWNERSHIP=n
+SIGN=n
+SIGN_KEY_PATH=""
 
 # LSM file stuff
 LSM_CMD="echo No LSM. >> \"\$archname\""
@@ -336,6 +339,11 @@ do
 	KEEP=y
         if ! shift 2; then MS_Usage; exit 1; fi
 	;;
+    --sign)
+    SIGN_KEY_PATH="$2"
+    SIGN=y
+        if ! shift 2; then MS_Usage; exit 1; fi
+    ;;
     --nooverwrite)
         NOOVERWRITE=y
 	shift
