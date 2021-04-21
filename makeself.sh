@@ -158,7 +158,7 @@ MS_Usage()
     echo "    --nox11            : Disable automatic spawn of a xterm"
     echo "    --nowait           : Do not wait for user input after executing embedded"
     echo "                         program from an xterm"
-    echo "    --sign             : Signature private key to sign the package with"
+    echo "    --sign passphrase  : Signature private key to sign the package with"
     echo "    --lsm file         : LSM file describing the package"
     echo "    --license file     : Append a license file"
     echo "    --help-header file : Add a header to the archive's --help output"
@@ -214,6 +214,7 @@ EXPORT_CONF=n
 SHA256=n
 OWNERSHIP=n
 SIGN=n
+GPG_PASSPHRASE=""
 
 # LSM file stuff
 LSM_CMD="echo No LSM. >> \"\$archname\""
@@ -340,8 +341,9 @@ do
         if ! shift 2; then MS_Usage; exit 1; fi
 	;;
     --sign)
-        SIGN=y
-    shift
+    SIGN=y
+    GPG_PASSPHRASE="$2"
+        if ! shift 2; then MS_Usage; exit 1; fi
     ;;
     --nooverwrite)
         NOOVERWRITE=y
@@ -749,7 +751,7 @@ fi
 if test "$SIGN" = y; then
     GPG_PATH=`exec <&- 2>&-; which gpg || command -v gpg || type gpg`
     if test -x "$GPG_PATH"; then
-        SIGNATURE=`eval "$GPG_PATH --batch --output - --detach-sig $tmpfile | base64 -w0"`
+        SIGNATURE=`eval "echo $GPG_PASSPHRASE | $GPG_PATH --batch --yes --passphrase-fd 0 --output - --detach-sig $tmpfile | base64 -w0"`
     fi
     if test "$QUIET" = "n"; then
         if test -x "$GPG_PATH"; then
