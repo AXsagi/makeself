@@ -11,6 +11,7 @@ fi
 CRCsum="$CRCsum"
 MD5="$MD5sum"
 SHA="$SHAsum"
+SIGNATURE="$Signature"
 TMPROOT=\${TMPDIR:=/tmp}
 USER_PWD="\$PWD"
 export USER_PWD
